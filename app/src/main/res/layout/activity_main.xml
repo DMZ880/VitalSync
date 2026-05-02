@@ -29,12 +29,13 @@
             android:textStyle="bold" />
 
         <ImageView
+            android:id="@+id/btnMenuOpciones"
             android:layout_width="28dp"
             android:layout_height="28dp"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
-            android:src="@android:drawable/ic_menu_sort_by_size"
-            app:tint="#000000" />
+            android:src="@android:drawable/ic_menu_more"
+            app:tint="#FFFFFF" />
     </RelativeLayout>
 
     <androidx.cardview.widget.CardView
@@ -93,7 +94,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="16dp"
-                        android:text="Ibuprofeno 600mg - 20:00h"
+                        android:text="Sin medicamentos programados"
                         android:textColor="#000000"
                         android:textSize="20sp" />
                 </LinearLayout>
@@ -115,49 +116,16 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
         android:text="MI INVENTARIO:"
         android:textColor="#000000"
         android:textSize="18sp"
         android:textStyle="bold" />
 
-    <LinearLayout
+    <ListView
+        android:id="@+id/lvInventario"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="24dp">
+        android:layout_height="match_parent"
+        android:layout_margin="16dp" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="PARACETAMOL 600mg (80%)"
-            android:textColor="#000000"
-            android:textSize="14sp"
-            android:textStyle="bold" />
-
-        <ProgressBar
-            style="?android:attr/progressBarStyleHorizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:progress="80"
-            android:progressTint="#238C42" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="SIMVASTINA 40 MG (20%)"
-            android:textColor="#000000"
-            android:textSize="14sp"
-            android:textStyle="bold" />
-
-        <ProgressBar
-            style="?android:attr/progressBarStyleHorizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:progress="20"
-            android:progressTint="#BD1414" />
-    </LinearLayout>
 </LinearLayout>

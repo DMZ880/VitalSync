@@ -60,4 +60,11 @@ public class MedicamentoController {
         db.close();
         return lista;
     }
+    public void actualizarStock(int id, float nuevoStock) {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("stockTotal", nuevoStock);
+        db.update("Medicamento", values, "idMedicamento=?", new String[]{String.valueOf(id)});
+        db.close();
+    }
 }

@@ -12,6 +12,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.DiegoMozo_TFG_VitalSync">
         <activity
+            android:name=".AjustesActivity"
+            android:exported="false" />
+        <activity
+            android:name=".SegundoActivity"
+            android:exported="false" />
+        <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
