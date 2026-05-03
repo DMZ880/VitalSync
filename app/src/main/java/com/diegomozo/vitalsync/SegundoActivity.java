@@ -31,13 +31,13 @@ public class SegundoActivity extends AppCompatActivity {
 
         controller = new MedicamentoController(this);
 
-        etNombre = findViewById(R.id.etNombre);
+        etNombre = findViewById(R.id.etNombreMedicamento);
         etDosis = findViewById(R.id.etDosis);
-        spFormato = findViewById(R.id.spFormato);
-        etStock = findViewById(R.id.etStock);
-        etFrecuencia = findViewById(R.id.etFrecuencia);
-        btnGuardar = findViewById(R.id.btnGuardar);
-        btnVolver = findViewById(R.id.btnVolver);
+        spFormato = findViewById(R.id.spinnerFormato);
+        etStock = findViewById(R.id.etStockTotal);
+        etFrecuencia = findViewById(R.id.etFrecuenciaHoras);
+        btnGuardar = findViewById(R.id.btnGuardarMedicamento);
+        btnVolver = findViewById(R.id.btnVolverSecundario);
 
         String[] formatos = {"mg", "ml", "pastillas", "gotas", "g"};
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.spinner_item, formatos);
@@ -80,7 +80,6 @@ public class SegundoActivity extends AppCompatActivity {
         String formato = spFormato.getSelectedItem().toString();
         float stock = Float.parseFloat(stockStr);
         int frecuencia = Integer.parseInt(frecuenciaStr);
-
         Medicamento med = new Medicamento(idModificar != -1 ? idModificar : 0, nombre, dosis, formato, stock, frecuencia, 1);
 
         if (idModificar != -1) {

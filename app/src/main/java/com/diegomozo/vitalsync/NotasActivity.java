@@ -43,36 +43,43 @@ public class NotasActivity extends AppCompatActivity {
 
     private void cargarNotas() {
         listaNotas = controller.obtenerListaNotas();
-        ArrayAdapter<Nota> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, listaNotas);
+        ArrayAdapter<Nota> adapter = new ArrayAdapter<>(this, R.layout.item_lista_nota, listaNotas);
         lvNotas.setAdapter(adapter);
     }
 
     private void mostrarDetalleNota(Nota nota) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this, android.R.style.Theme_DeviceDefault_Light_Dialog_Alert);
-        builder.setTitle("Detalle de la nota");
+        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this, android.R.style.Theme_Material_Light_Dialog_Alert);
+        builder.setTitle("📝 " + nota.getNombreMedicamento());
 
-        LinearLayout layout = new LinearLayout(this);
-        layout.setOrientation(LinearLayout.VERTICAL);
+        android.widget.LinearLayout layout = new android.widget.LinearLayout(this);
+        layout.setOrientation(android.widget.LinearLayout.VERTICAL);
         layout.setPadding(60, 40, 60, 20);
 
-        TextView tvDetalle = new TextView(this);
-        tvDetalle.setText("Tomado el: " + nota.getFechaHora() + "\n\n" +
-                "Medicamento: " + nota.getNombreMedicamento() + "\n\n" +
-                "Nota:\n" + nota.getTextoNota());
-        tvDetalle.setTextSize(16);
-        tvDetalle.setTextColor(Color.BLACK);
+        android.widget.TextView tvFecha = new android.widget.TextView(this);
+        tvFecha.setText("🕒 " + nota.toString().split(" \\| ")[0]);
+        tvFecha.setTextSize(14);
+        tvFecha.setTextColor(android.graphics.Color.DKGRAY);
+        layout.addView(tvFecha);
+
+        android.widget.TextView tvDetalle = new android.widget.TextView(this);
+        tvDetalle.setText("\n" + nota.getTextoNota());
+        tvDetalle.setTextSize(18);
+        tvDetalle.setTextColor(android.graphics.Color.BLACK);
         layout.addView(tvDetalle);
 
         builder.setView(layout);
 
         builder.setPositiveButton("Borrar Nota", (dialog, which) -> {
             controller.borrarNota(nota.getIdMedicamento(), nota.getFechaHora());
-            Toast.makeText(this, "Nota borrada", Toast.LENGTH_SHORT).show();
+            android.widget.Toast.makeText(this, "Nota borrada", android.widget.Toast.LENGTH_SHORT).show();
             cargarNotas();
         });
 
         builder.setNegativeButton("Cerrar", null);
 
-        builder.show();
+        android.app.AlertDialog dialog = builder.create();
+        dialog.show();
+        dialog.getButton(android.app.AlertDialog.BUTTON_POSITIVE).setTextColor(android.graphics.Color.parseColor("#D32F2F"));
+        dialog.getButton(android.app.AlertDialog.BUTTON_NEGATIVE).setTextColor(android.graphics.Color.parseColor("#757575"));
     }
 }

@@ -20,6 +20,28 @@ public class Nota {
 
     @Override
     public String toString() {
-        return fechaHora;
+        try {
+            java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss", java.util.Locale.getDefault());
+            java.util.Date date = sdf.parse(fechaHora);
+            java.util.Calendar calRaw = java.util.Calendar.getInstance();
+            calRaw.setTime(date);
+
+            java.util.Calendar hoy = java.util.Calendar.getInstance();
+            java.util.Calendar ayer = java.util.Calendar.getInstance();
+            ayer.add(java.util.Calendar.DAY_OF_YEAR, -1);
+
+            java.text.SimpleDateFormat formatoHora = new java.text.SimpleDateFormat("HH:mm", java.util.Locale.getDefault());
+
+            if (calRaw.get(java.util.Calendar.YEAR) == hoy.get(java.util.Calendar.YEAR) && calRaw.get(java.util.Calendar.DAY_OF_YEAR) == hoy.get(java.util.Calendar.DAY_OF_YEAR)) {
+                return "Hoy - " + formatoHora.format(date) + " | 💊 " + nombreMedicamento;
+            } else if (calRaw.get(java.util.Calendar.YEAR) == ayer.get(java.util.Calendar.YEAR) && calRaw.get(java.util.Calendar.DAY_OF_YEAR) == ayer.get(java.util.Calendar.DAY_OF_YEAR)) {
+                return "Ayer - " + formatoHora.format(date) + " | 💊 " + nombreMedicamento;
+            } else {
+                java.text.SimpleDateFormat formatoCorto = new java.text.SimpleDateFormat("dd MMM - HH:mm", java.util.Locale.getDefault());
+                return formatoCorto.format(date) + " | 💊 " + nombreMedicamento;
+            }
+        } catch (Exception e) {
+            return fechaHora + " | " + nombreMedicamento;
+        }
     }
 }

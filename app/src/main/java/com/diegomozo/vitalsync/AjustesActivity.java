@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.Switch;
+import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import com.diegomozo.vitalsync.Models.BaseDatosLocal;
@@ -18,6 +19,7 @@ public class AjustesActivity extends AppCompatActivity {
 
     private ImageView btnVolverAjustes;
     private SeekBar sbTamanoLetra;
+    private TextView tvPreviewLetra;
     private Switch swNotificaciones;
     private Button btnBorrarDatos;
 
@@ -28,6 +30,7 @@ public class AjustesActivity extends AppCompatActivity {
 
         btnVolverAjustes = findViewById(R.id.btnVolverAjustes);
         sbTamanoLetra = findViewById(R.id.sbTamanoLetra);
+        tvPreviewLetra = findViewById(R.id.tvPreviewLetra);
         swNotificaciones = findViewById(R.id.swNotificaciones);
         btnBorrarDatos = findViewById(R.id.btnBorrarDatos);
 
@@ -36,11 +39,14 @@ public class AjustesActivity extends AppCompatActivity {
         boolean notifActivas = prefs.getBoolean("notificacionesActivas", true);
 
         sbTamanoLetra.setProgress(tamanoExtra);
+        tvPreviewLetra.setTextSize(18 + tamanoExtra);
         swNotificaciones.setChecked(notifActivas);
 
         sbTamanoLetra.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {}
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                tvPreviewLetra.setTextSize(18 + progress);
+            }
 
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {}
@@ -67,15 +73,17 @@ public class AjustesActivity extends AppCompatActivity {
     }
 
     private void mostrarDialogoConfirmacion() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Confirmar borrado");
-        builder.setMessage("¿Estás seguro de que quieres borrar todos los datos? Esta acción no se puede deshacer.");
+        AlertDialog.Builder builder = new AlertDialog.Builder(this, android.R.style.Theme_Material_Light_Dialog_Alert);
+        builder.setTitle("⚠️ Confirmar borrado");
+        builder.setMessage("¿Estás seguro de que quieres borrar todos los datos?\n\nEsta acción eliminará todos tus medicamentos, historial y alarmas programadas. No se puede deshacer.");
 
         builder.setPositiveButton("Sí, borrar todo", (dialog, which) -> borrarDatos());
         builder.setNegativeButton("Cancelar", (dialog, which) -> dialog.dismiss());
 
         AlertDialog dialog = builder.create();
         dialog.show();
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(android.graphics.Color.parseColor("#D32F2F"));
+        dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(android.graphics.Color.parseColor("#757575"));
     }
 
     private void borrarDatos() {

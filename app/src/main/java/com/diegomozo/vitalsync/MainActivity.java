@@ -77,9 +77,11 @@ public class MainActivity extends AppCompatActivity {
             if (tomasProgramadas != null && !tomasProgramadas.isEmpty()) {
                 Medicamento medActual = tomasProgramadas.get(indiceTomaActual).medicamento;
                 if (medActual.getStockTotal() >= medActual.getDosis()) {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(this, android.R.style.Theme_DeviceDefault_Light_Dialog_Alert);
+                    AlertDialog.Builder builder = new AlertDialog.Builder(this, android.R.style.Theme_Material_Light_Dialog_Alert);
                     builder.setTitle("Añadir Nota Clínica (Opcional)");
                     final EditText input = new EditText(this);
+                    input.setTextColor(Color.BLACK);
+                    input.setHintTextColor(Color.DKGRAY);
                     builder.setView(input);
 
                     builder.setPositiveButton("Guardar Nota", (dialog, which) -> {
@@ -101,7 +103,10 @@ public class MainActivity extends AppCompatActivity {
                         cargarUI();
                     });
 
-                    builder.show();
+                    AlertDialog dialog = builder.create();
+                    dialog.show();
+                    dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.parseColor("#238C42"));
+                    dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.parseColor("#238C42"));
                 }
             }
         });
@@ -278,7 +283,9 @@ public class MainActivity extends AppCompatActivity {
             String horaActualStr = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
             String horaTomaStr = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date(actual.tiempo));
 
-            tvProximaToma.setText(horaActualStr + " -> " + actual.medicamento.getNombre() + " " + actual.medicamento.getDosis() + actual.medicamento.getFormato() + "\nProgramada: " + horaTomaStr);
+            String dosisFormateada = formatearDosis(actual.medicamento.getDosis(), actual.medicamento.getFormato());
+            tvProximaToma.setText("🕒 " + horaActualStr + " -> 💊 " + actual.medicamento.getNombre() + " (" + dosisFormateada + ")\nProgramada: " + horaTomaStr);
+
             btnConfirmarToma.setEnabled(true);
             btnConfirmarToma.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#238C42")));
             if (tomasProgramadas.size() > 1) {
@@ -293,6 +300,13 @@ public class MainActivity extends AppCompatActivity {
             btnCambiarToma.setVisibility(View.GONE);
         }
         tvProximaToma.setTextSize(18 + tamanoExtra);
+    }
+    private String formatearDosis(float dosis, String formato) {
+        String cantidad = (dosis == (long) dosis) ? String.format(java.util.Locale.getDefault(), "%d", (long) dosis) : String.format(java.util.Locale.getDefault(), "%s", dosis);
+        if (formato.toLowerCase().contains("pastilla")) {
+            return dosis == 1f ? cantidad + " pastilla" : cantidad + " pastillas";
+        }
+        return cantidad + " " + formato;
     }
 
 }

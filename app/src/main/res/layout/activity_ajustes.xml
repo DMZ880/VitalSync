@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#F5F5F5"
@@ -77,6 +76,16 @@
                     android:max="4"
                     android:progressTint="#238C42"
                     android:thumbTint="#238C42" />
+
+                <TextView
+                    android:id="@+id/tvPreviewLetra"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:layout_gravity="center_horizontal"
+                    android:text="💊 Paracetamol - 1 pastilla"
+                    android:textColor="#000000"
+                    android:textSize="18sp" />
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
@@ -124,8 +133,7 @@
                         android:layout_height="wrap_content"
                         android:checked="true"
                         android:thumbTint="#238C42"
-                        android:trackTint="#A5D6A7"
-                        tools:ignore="UseSwitchCompatOrMaterialXml" />
+                        android:trackTint="#A5D6A7" />
                 </LinearLayout>
 
                 <View
@@ -160,13 +168,17 @@
 
         <Button
             android:id="@+id/btnBorrarDatos"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:backgroundTint="#D32F2F"
-            android:padding="16dp"
+            android:layout_gravity="center_horizontal"
+            android:backgroundTint="#FFFFFF"
+            android:paddingHorizontal="24dp"
+            android:paddingVertical="12dp"
             android:text="BORRAR TODOS LOS DATOS"
-            android:textColor="#FFFFFF"
-            android:textStyle="bold" />
+            android:textColor="#D32F2F"
+            android:textStyle="bold"
+            app:strokeColor="#D32F2F"
+            app:strokeWidth="2dp" />
 
     </LinearLayout>
 </LinearLayout>
