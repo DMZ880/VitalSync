@@ -42,6 +42,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="24dp"
+        app:cardBackgroundColor="#FFFFFF"
         app:cardCornerRadius="12dp"
         app:cardElevation="8dp">
 
@@ -52,53 +53,37 @@
             android:orientation="vertical"
             android:padding="24dp">
 
-            <androidx.cardview.widget.CardView
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Próxima toma:"
+                    android:textColor="#000000"
+                    android:textSize="18sp" />
+
+                <ImageView
+                    android:id="@+id/btnCambiarToma"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginStart="8dp"
+                    android:src="@android:drawable/ic_popup_sync"
+                    app:tint="#238C42" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tvProximaToma"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:cardBackgroundColor="#E0E0E0"
-                app:cardCornerRadius="8dp"
-                app:cardElevation="0dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_margin="2dp"
-                    android:background="#FFFFFF"
-                    android:gravity="center"
-                    android:orientation="vertical"
-                    android:padding="20dp">
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Próxima toma:"
-                            android:textColor="#000000"
-                            android:textSize="18sp" />
-
-                        <ImageView
-                            android:layout_width="24dp"
-                            android:layout_height="24dp"
-                            android:layout_marginStart="8dp"
-                            android:src="@android:drawable/ic_menu_recent_history"
-                            app:tint="#000000" />
-                    </LinearLayout>
-
-                    <TextView
-                        android:id="@+id/tvProximaToma"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp"
-                        android:text="Sin medicamentos programados"
-                        android:textColor="#000000"
-                        android:textSize="20sp" />
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
+                android:layout_marginTop="16dp"
+                android:gravity="center"
+                android:text="No hay ninguna toma programada"
+                android:textColor="#000000"
+                android:textSize="20sp" />
 
             <Button
                 android:id="@+id/btnConfirmarToma"
@@ -126,6 +111,8 @@
         android:id="@+id/lvInventario"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="16dp" />
+        android:layout_margin="16dp"
+        android:divider="#E0E0E0"
+        android:dividerHeight="1dp" />
 
 </LinearLayout>
