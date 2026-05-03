@@ -100,13 +100,19 @@ public class SegundoActivity extends AppCompatActivity {
     }
 
     private void programarAlarma(long id, String nombre, int frecuencia) {
-        long tiempoMilis = System.currentTimeMillis() + ((long) frecuencia * 60000);
+        android.content.SharedPreferences prefs = getSharedPreferences("VitalSyncPrefs", MODE_PRIVATE);
+
+        long tiempoMilis = System.currentTimeMillis() + ((long) frecuencia * 3600000);
+        prefs.edit().putLong("prox_toma_" + id, tiempoMilis).apply();
+
+        if (!prefs.getBoolean("notificacionesActivas", true)) return;
+
         java.util.Calendar cal = java.util.Calendar.getInstance();
         cal.setTimeInMillis(tiempoMilis);
         int hora = cal.get(java.util.Calendar.HOUR_OF_DAY);
         int minuto = cal.get(java.util.Calendar.MINUTE);
 
-        Intent intent = new Intent(android.provider.AlarmClock.ACTION_SET_ALARM);
+        android.content.Intent intent = new android.content.Intent(android.provider.AlarmClock.ACTION_SET_ALARM);
         intent.putExtra(android.provider.AlarmClock.EXTRA_MESSAGE, "VitalSync: " + nombre);
         intent.putExtra(android.provider.AlarmClock.EXTRA_HOUR, hora);
         intent.putExtra(android.provider.AlarmClock.EXTRA_MINUTES, minuto);
@@ -115,7 +121,7 @@ public class SegundoActivity extends AppCompatActivity {
         if (intent.resolveActivity(getPackageManager()) != null) {
             startActivity(intent);
         } else {
-            Toast.makeText(this, "No se encontró app de reloj nativa", Toast.LENGTH_SHORT).show();
+            android.widget.Toast.makeText(this, "No se encontró app de reloj nativa", android.widget.Toast.LENGTH_SHORT).show();
         }
     }
 }

@@ -13,11 +13,17 @@
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
-        android:label="@string/app_name"
         android:icon="@drawable/logo"
+        android:label="@string/app_name"
         android:roundIcon="@drawable/logo"
         android:supportsRtl="true"
         android:theme="@style/Theme.DiegoMozo_TFG_VitalSync">
+        <activity
+            android:name=".NotasActivity"
+            android:exported="false" />
+        <activity
+            android:name=".NotasActivity"
+            android:exported="false" />
         <activity
             android:name=".AjustesActivity"
             android:exported="false" />
@@ -34,8 +40,9 @@
             </intent-filter>
         </activity>
 
-        <receiver android:name=".Alarma" android:exported="true" />
-
+        <receiver
+            android:name=".Alarma"
+            android:exported="true" />
     </application>
 
 </manifest>

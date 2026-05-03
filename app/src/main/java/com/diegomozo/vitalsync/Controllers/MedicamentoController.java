@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Locale;
 import com.diegomozo.vitalsync.Models.BaseDatosLocal;
 import com.diegomozo.vitalsync.Models.Medicamento;
+import com.diegomozo.vitalsync.NotasActivity;
 
 public class MedicamentoController {
 
@@ -163,5 +164,26 @@ public class MedicamentoController {
         cursor.close();
         db.close();
         return historial.length() > 0 ? historial.toString() : "No hay notas clínicas guardadas.";
+    }
+    public java.util.List<com.diegomozo.vitalsync.Models.Nota> obtenerListaNotas() {
+        java.util.List<com.diegomozo.vitalsync.Models.Nota> lista = new java.util.ArrayList<>();
+        android.database.sqlite.SQLiteDatabase db = dbHelper.getReadableDatabase();
+        android.database.Cursor cursor = db.rawQuery("SELECT m.idMedicamento, m.nombre, t.fechaHoraReal, t.notaClinica FROM Toma t JOIN Medicamento m ON t.idMedicamento = m.idMedicamento WHERE t.notaClinica != '' ORDER BY t.fechaHoraReal DESC", null);
+        if (cursor.moveToFirst()) {
+            do {
+                lista.add(new com.diegomozo.vitalsync.Models.Nota(cursor.getInt(0), cursor.getString(1), cursor.getString(2), cursor.getString(3)));
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        db.close();
+        return lista;
+    }
+
+    public void borrarNota(int idMedicamento, String fechaHora) {
+        android.database.sqlite.SQLiteDatabase db = dbHelper.getWritableDatabase();
+        android.content.ContentValues values = new android.content.ContentValues();
+        values.put("notaClinica", "");
+        db.update("Toma", values, "idMedicamento = ? AND fechaHoraReal = ?", new String[]{String.valueOf(idMedicamento), fechaHora});
+        db.close();
     }
 }

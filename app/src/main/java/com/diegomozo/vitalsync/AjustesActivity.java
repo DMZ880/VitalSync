@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.SeekBar;
+import android.widget.Switch;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import com.diegomozo.vitalsync.Models.BaseDatosLocal;
@@ -17,6 +18,7 @@ public class AjustesActivity extends AppCompatActivity {
 
     private ImageView btnVolverAjustes;
     private SeekBar sbTamanoLetra;
+    private Switch swNotificaciones;
     private Button btnBorrarDatos;
 
     @Override
@@ -26,12 +28,15 @@ public class AjustesActivity extends AppCompatActivity {
 
         btnVolverAjustes = findViewById(R.id.btnVolverAjustes);
         sbTamanoLetra = findViewById(R.id.sbTamanoLetra);
+        swNotificaciones = findViewById(R.id.swNotificaciones);
         btnBorrarDatos = findViewById(R.id.btnBorrarDatos);
 
         SharedPreferences prefs = getSharedPreferences("VitalSyncPrefs", Context.MODE_PRIVATE);
         int tamanoExtra = prefs.getInt("tamanoExtra", 0);
+        boolean notifActivas = prefs.getBoolean("notificacionesActivas", true);
 
         sbTamanoLetra.setProgress(tamanoExtra);
+        swNotificaciones.setChecked(notifActivas);
 
         sbTamanoLetra.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -48,6 +53,12 @@ public class AjustesActivity extends AppCompatActivity {
                 editor.apply();
                 Toast.makeText(AjustesActivity.this, "Tamaño de letra actualizado", Toast.LENGTH_SHORT).show();
             }
+        });
+
+        swNotificaciones.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            SharedPreferences.Editor editor = getSharedPreferences("VitalSyncPrefs", Context.MODE_PRIVATE).edit();
+            editor.putBoolean("notificacionesActivas", isChecked);
+            editor.apply();
         });
 
         btnBorrarDatos.setOnClickListener(v -> mostrarDialogoConfirmacion());

@@ -77,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
             if (tomasProgramadas != null && !tomasProgramadas.isEmpty()) {
                 Medicamento medActual = tomasProgramadas.get(indiceTomaActual).medicamento;
                 if (medActual.getStockTotal() >= medActual.getDosis()) {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                    AlertDialog.Builder builder = new AlertDialog.Builder(this, android.R.style.Theme_DeviceDefault_Light_Dialog_Alert);
                     builder.setTitle("Añadir Nota Clínica (Opcional)");
                     final EditText input = new EditText(this);
                     builder.setView(input);
@@ -87,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
                         float nuevoStock = medActual.getStockTotal() - medActual.getDosis();
                         controller.actualizarStock(medActual.getIdMedicamento(), nuevoStock);
                         controller.registrarToma(medActual.getIdMedicamento(), "Confirmada", nota);
-                        programarSiguienteAlarma(medActual.getNombre(), medActual.getFrecuenciaHoras());
+                        programarSiguienteAlarma(medActual.getIdMedicamento(), medActual.getNombre(), medActual.getFrecuenciaHoras());
                         Toast.makeText(this, "Toma y nota registradas", Toast.LENGTH_SHORT).show();
                         cargarUI();
                     });
@@ -96,7 +96,7 @@ public class MainActivity extends AppCompatActivity {
                         float nuevoStock = medActual.getStockTotal() - medActual.getDosis();
                         controller.actualizarStock(medActual.getIdMedicamento(), nuevoStock);
                         controller.registrarToma(medActual.getIdMedicamento(), "Confirmada", "");
-                        programarSiguienteAlarma(medActual.getNombre(), medActual.getFrecuenciaHoras());
+                        programarSiguienteAlarma(medActual.getIdMedicamento(), medActual.getNombre(), medActual.getFrecuenciaHoras());
                         Toast.makeText(this, "Toma confirmada", Toast.LENGTH_SHORT).show();
                         cargarUI();
                     });
@@ -123,8 +123,14 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void programarSiguienteAlarma(String nombre, int frecuencia) {
-        long tiempoMilis = System.currentTimeMillis() + ((long) frecuencia * 60000);
+    private void programarSiguienteAlarma(int idMedicamento, String nombre, int frecuencia) {
+        SharedPreferences prefs = getSharedPreferences("VitalSyncPrefs", MODE_PRIVATE);
+
+        long tiempoMilis = System.currentTimeMillis() + ((long) frecuencia * 3600000);
+        prefs.edit().putLong("prox_toma_" + idMedicamento, tiempoMilis).apply();
+
+        if (!prefs.getBoolean("notificacionesActivas", true)) return;
+
         java.util.Calendar cal = java.util.Calendar.getInstance();
         cal.setTimeInMillis(tiempoMilis);
         int hora = cal.get(java.util.Calendar.HOUR_OF_DAY);
@@ -158,7 +164,7 @@ public class MainActivity extends AppCompatActivity {
             if (item.getTitle().equals("Añadir Medicamento")) {
                 startActivity(new Intent(MainActivity.this, SegundoActivity.class));
             } else if (item.getTitle().equals("Ver Notas Clínicas")) {
-                mostrarHistorialNotas();
+                startActivity(new Intent(MainActivity.this, NotasActivity.class));
             } else if (item.getTitle().equals("Ajustes")) {
                 startActivity(new Intent(MainActivity.this, AjustesActivity.class));
             }
@@ -168,14 +174,25 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void mostrarHistorialNotas() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this, android.R.style.Theme_DeviceDefault_Light_Dialog_Alert);
         builder.setTitle("Historial de Notas");
-        builder.setMessage(controller.obtenerHistorialNotas());
+
+        android.database.sqlite.SQLiteDatabase db = new com.diegomozo.vitalsync.Models.BaseDatosLocal(this).getReadableDatabase();
+        android.database.Cursor cursor = db.rawQuery("SELECT m.nombre, t.fechaHoraReal, t.notaClinica FROM Toma t JOIN Medicamento m ON t.idMedicamento = m.idMedicamento WHERE t.notaClinica != '' ORDER BY t.fechaHoraReal DESC", null);
+        StringBuilder historial = new StringBuilder();
+        if (cursor.moveToFirst()) {
+            do {
+                historial.append(cursor.getString(1)).append(" - ").append(cursor.getString(0)).append("\nNota: ").append(cursor.getString(2)).append("\n\n");
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        db.close();
+
+        builder.setMessage(historial.length() > 0 ? historial.toString() : "No hay notas clínicas guardadas.");
         builder.setPositiveButton("Cerrar", null);
         builder.show();
     }
 
-    @SuppressLint("SetTextI18n")
     private void mostrarDetalleMedicamento(Medicamento m) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this, android.R.style.Theme_DeviceDefault_Light_Dialog_Alert);
         builder.setTitle(m.getNombre());
@@ -220,8 +237,10 @@ public class MainActivity extends AppCompatActivity {
 
         for (Medicamento m : lista) {
             if (m.getStockTotal() >= m.getDosis() && m.getActivo() == 1) {
-                long prox = controller.obtenerTiempoSiguienteToma(m.getIdMedicamento(), m.getFrecuenciaHoras());
-                if (prox == 0) prox = System.currentTimeMillis();
+                long prox = prefs.getLong("prox_toma_" + m.getIdMedicamento(), 0);
+                if (prox == 0) {
+                    prox = System.currentTimeMillis() + ((long) m.getFrecuenciaHoras() * 3600000);
+                }
                 tomasProgramadas.add(new TomaProgramada(m, prox));
             }
         }
@@ -252,6 +271,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    @SuppressLint("SetTextI18n")
     private void actualizarTarjetaToma() {
         if (tomasProgramadas != null && !tomasProgramadas.isEmpty()) {
             TomaProgramada actual = tomasProgramadas.get(indiceTomaActual);
